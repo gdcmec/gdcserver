@@ -1,19 +1,16 @@
 const express = require("express")
-const addNewEventController = require("../controllers/AddEventController")
+const {addNewEventController , editEventController , deleteEventController} = require("../controller/event.controller")
+
 const router = express.Router()
 
 router.get("/", (req, res) => {
   res.send("Events")
 })
 
-router.post("/event/new", addNewEventController)
+router.post("/new", addNewEventController)
 
-router.post("/event/edit", (req, res) => {
-  res.send("Edit event")
-})
+router.post("/edit",editEventController)
 
-router.post("/event/delete", (req, res) => {
-  res.send("Delete event")
-})
+router.post("/delete", deleteEventController)
 
 module.exports = router
