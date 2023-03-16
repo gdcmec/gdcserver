@@ -17,7 +17,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use("/cms", require("./routes/cms.route"))
-app.use("/events", require("./routes/events.route"))
 
 app.get("/", (req, res) => {
   res.send("GDC Server")
