@@ -23,23 +23,22 @@ const addNewEvent = async (event) => {
 
 const editEvent = async (event) => {
     
-        Event.updateOne({_id: new ObjectId(event.id)}, {
+    let updatedEvent
+    try {
+    updatedEvent = await Event.findByIdAndUpdate({_id: new ObjectId(event.id)}, {
             title: event.title,
             description: event.description,
             date: event.date,
             time: event.time,
             venue: event.venue,
             registrationLink: event.registrationLink,
-        })
-        .then((result) => {
-            console.log(result);
-        }
-        ).catch((err) => {
-            console.log(err);
-        }
-        );
+        },{new: true})
+    
+} catch (error) {
+        console.log(error);
 }
-
+    return updatedEvent;    
+}
 const deleteEvent = async (event_id) => {
 
     Event.deleteOne({_id: new ObjectId(event_id)})
@@ -51,5 +50,9 @@ const deleteEvent = async (event_id) => {
     }
     );
 }
+const getEvents = async () => {
+    const events = await Event.find().sort({date: -1})
+    return events;
+}
 
-module.exports = { addNewEvent, editEvent, deleteEvent }
+module.exports = { addNewEvent, editEvent, deleteEvent , getEvents }
