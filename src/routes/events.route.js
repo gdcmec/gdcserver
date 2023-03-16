@@ -1,5 +1,5 @@
 const express = require("express")
-const {addNewEventController , editEventController , deleteEventController} = require("../controller/event.controller")
+const {addNewEventController , editEventController , deleteEventController , getEventsController} = require("../controller/event.controller")
 
 const router = express.Router()
 
@@ -13,4 +13,5 @@ router.post("/edit",editEventController)
 
 router.post("/delete", deleteEventController)
 
+router.get("/get",getEventsController)
 module.exports = router
