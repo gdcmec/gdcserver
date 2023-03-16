@@ -6,5 +6,6 @@ router.get("/", (req, res) => {
 })
 
 router.use("/events", require("./events.route"))
+router.use("/members", require("./members.route"))
 
 module.exports = router
