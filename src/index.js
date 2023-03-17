@@ -1,5 +1,6 @@
 const express = require("express")
 const mongoose = require("mongoose")
+const cors = require("cors")
 require("dotenv").config()
 
 const port = process.env.PORT || 3000
@@ -11,6 +12,7 @@ mongoose.connect(`${process.env.MONGODB_URI}`);
 mongoose.connection.on('connected', () => {
     console.log("mongoose connected");
 }) 
+app.use(cors())
 
 app.use(express.json())
 //body parser
