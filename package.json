@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "prettier": "prettier --write .",
     "start": "node src/index.js"
   },
   "repository": {
@@ -18,7 +19,8 @@
   },
   "homepage": "https://github.com/gdcmec/gdc-server#readme",
   "devDependencies": {
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.21",
+    "prettier": "^2.8.4"
   },
   "dependencies": {
     "cors": "^2.8.5",
