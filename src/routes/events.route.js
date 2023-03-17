@@ -11,7 +11,7 @@ router.post("/new", addNewEventController)
 
 router.post("/edit",editEventController)
 
-router.post("/delete", deleteEventController)
+router.get("/delete/:id", deleteEventController)
 
 router.get("/get",getEventsController)
 module.exports = router

@@ -3,19 +3,32 @@ const {addNewEvent, editEvent , deleteEvent , getEvents} = require("../services/
 
 const addNewEventController = async (req, res) => {
     const event = req.body.event
-    await addNewEvent(event)
-    res.send("Event added")
+    const newEvent = await addNewEvent(event)
+    if(newEvent == null)
+        res.status(500).json({success : false , message : "Event not added"})
+    else
+        res.
+        status(200).
+        json({success : true , newEvent : newEvent})
+
+
     }
 
 const editEventController = async (req, res) => {
+    console.log("got request");
+    console.log(req.body);
     const event = req.body.event
-    await editEvent(event)
-    res.send("Event edited")
+    const updatedEvent = await editEvent(event)
+    if(updatedEvent == null)
+        res.status(500).json({success : false , message : "Event not edited"})
+    else
+    res.status(200).json({success : true , updatedEvent : updatedEvent})
+
 }
-  
 const deleteEventController = async (req, res) => {
-    const event_id = req.body.event_id
-    await deleteEvent(event_id)
+    const id = req.params.id
+    console.log(id);
+    await deleteEvent(id)
     res.send("Event deleted")
 }
 

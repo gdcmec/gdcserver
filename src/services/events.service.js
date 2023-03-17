@@ -3,20 +3,23 @@ const ObjectId = mongoose.Types.ObjectId;
 const Event = require('../models/EventModel');
 const addNewEvent = async (event) => {
 
-        await Event.create({
-            title: event.title,
-            description: event.description,
-            date: event.date,
-            time: event.time,
-            venue: event.venue,
-            registrationLink: event.registrationLink,
-        })
-        .then((result) => {
-            console.log(result);
+        let newEvent = null
+        try{
+
+            newEvent = await Event.create({
+                title: event.title,
+                description: event.description,
+                date: event.date,
+                time: event.time,
+                venue: event.venue,
+                registrationLink: event.registrationLink,
+            })
         }
-        ).catch((err) => {
+        catch(err){
             console.log(err);
-        });
+        }
+        return newEvent;
+            
     
 
 }
@@ -25,7 +28,7 @@ const editEvent = async (event) => {
     
     let updatedEvent
     try {
-    updatedEvent = await Event.findByIdAndUpdate({_id: new ObjectId(event.id)}, {
+    updatedEvent = await Event.findByIdAndUpdate({_id: new ObjectId(event._id)}, {
             title: event.title,
             description: event.description,
             date: event.date,

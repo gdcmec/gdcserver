@@ -20,7 +20,7 @@ const EventSchema = new Schema({
         type: String,
         // type: Time,      ???
     },
-    regestationLink : {
+    registrationLink : {
         type: String,
         // required: true
     },
