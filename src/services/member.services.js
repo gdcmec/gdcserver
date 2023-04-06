@@ -1,56 +1,55 @@
-const Member = require('../Models/MemberModel')
-const mongoose = require('mongoose')
-const ObjectId = mongoose.Types.ObjectId;
+const {pool} = require('../config/postgres');
 
 const addNewMember = async (memberDetails) => {
 
-    const memeber_id = await Member.create({
-        name: memberDetails.name,
-        photoUrl: memberDetails.photoUrl,
-        position: memberDetails.position,
-    })
-    .then((result) => {
-        console.log(result);
-        return result._id;
+    try{
+    const member = await pool.query("INSERT INTO members (name, photo_url, position) VALUES ($1, $2, $3) RETURNING member_id",
+        [memberDetails.name, memberDetails.photoUrl, memberDetails.position])
+    return member.rows[0].member_id;
     }
-    ).catch((err) => {
+    catch(err){
         console.log(err);
-    });
-    return memeber_id;
-
+        return false;
+    }
 }
 
 const editMember = async (memberDetails) => {
     
-    let result = null;
     try{
-     result = await Member.findByIdAndUpdate({_id: new ObjectId(memberDetails.id)}, {
-        name: memberDetails.name,
-        photoUrl: memberDetails.photoUrl,
-        position: memberDetails.position,
-    },{new : true})
+     const result = await pool.query("UPDATE members SET name = $1, photo_url = $2, position = $3 WHERE member_id = $4 RETURNING *",
+        [memberDetails.name, memberDetails.photoUrl, memberDetails.position, memberDetails.member_id])
+    return result.rows[0];
 }
 catch(err){
     console.log(err);
+    return false;
 }
-    return result;
 }
 
 const deleteMember = async (member_id) => {
 
-    Member.deleteOne({_id: new ObjectId(member_id)})
-    .then((result) => {
-        console.log(result);
+    try{
+        await pool.query("DELETE FROM members WHERE member_id = $1", [member_id])
+        return true;
     }
-    ).catch((err) => {
+    catch(err){
         console.log(err);
+        return false;
     }
-    );
+
 }
 
 const getMembers = async () => {
-    const members = await Member.find().sort({position: 1})
-    return members;
+
+        try{
+        const members = await pool.query("SELECT * FROM members")
+        return members.rows;
+        }
+        catch(err){
+            console.log(err);
+            return false;
+        }
+        
 }
 
 module.exports = { addNewMember, editMember, deleteMember , getMembers }
