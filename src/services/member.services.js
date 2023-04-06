@@ -17,7 +17,7 @@ const editMember = async (memberDetails) => {
     
     try{
      const result = await pool.query("UPDATE members SET name = $1, photo_url = $2, position = $3 WHERE member_id = $4 RETURNING *",
-        [memberDetails.name, memberDetails.photoUrl, memberDetails.position, memberDetails.member_id])
+        [memberDetails.name, memberDetails.photo_url, memberDetails.position, memberDetails.member_id])
     return result.rows[0];
 }
 catch(err){
@@ -49,7 +49,7 @@ const getMembers = async () => {
             console.log(err);
             return false;
         }
-        
+
 }
 
 module.exports = { addNewMember, editMember, deleteMember , getMembers }

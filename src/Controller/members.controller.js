@@ -44,6 +44,7 @@ const deleteMemberController = async (req, res) => {
 }
 
 const getMembersController = async (req, res) => {
+    console.log("got request");
     const members = await getMembers();
     if(!members)
         res.status(500).json({
@@ -51,7 +52,10 @@ const getMembersController = async (req, res) => {
             message: "Members not found",
         });
     else
-    res.status(200).json(members);
+    res.status(200).json({
+        success: true,
+        members : members
+    });
 }
 
 module.exports = {addNewMemberController, editMemberController, deleteMemberController, getMembersController};
