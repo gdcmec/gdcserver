@@ -1,5 +1,5 @@
 
-const {addNewEvent, editEvent , deleteEvent , getEvents} = require("../services/events.service")
+const {addNewEvent, editEvent , deleteEvent , getEvents , getParticipantsData} = require("../services/events.service")
 
 const addNewEventController = async (req, res) => {
     const event = req.body.event
@@ -37,5 +37,13 @@ const getEventsController = async (req, res) => {
     res.status(200).json(events)
 }
 
+const getNumbersController = async (req, res) => {
+    const event_id = req.params.id
+    const participantsData = await getParticipantsData(event_id)
+    res.status(200).json(participantsData)
+}
 
-module.exports = {addNewEventController , editEventController , deleteEventController , getEventsController};
+
+
+
+module.exports = {addNewEventController , editEventController , deleteEventController , getEventsController , getNumbersController};
