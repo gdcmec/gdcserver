@@ -1,10 +1,10 @@
 const {pool}  = require('../config/postgres');
 
-const getUser = async (email) => {
+const getUserId = async (email) => {
 
     try{
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [email])
-    return user.rows[0].user_id;
+    return result.rows[0].user_id;
 
     }
     catch(err){
@@ -28,7 +28,7 @@ const addUser = async (user) => {
 
 const getInterested = async (event_id) => {
     try{
-        const result = await pool.query("SELECT * FROM interested NATURAL JOIN users WHERE event_id = $1", [event_id])
+        const result = await pool.query("SELECT * FROM interested NATURAL JOIN users WHERE event_id = $1 ORDER BY created_at DESC", [event_id]);
         return result.rows;
 
     }
@@ -40,7 +40,7 @@ const getInterested = async (event_id) => {
 
 const getAttended = async (event_id) => {
     try{
-        const result = await pool.query("SELECT * FROM attended NATURAL JOIN users WHERE event_id = $1", [event_id])
+        const result = await pool.query("SELECT * FROM attended NATURAL JOIN users WHERE event_id = $1 ORDER BY created_at DESC", [event_id]);
         return result.rows;
 
     }
@@ -52,7 +52,7 @@ const getAttended = async (event_id) => {
 
 const getFeedbacks = async (event_id) => {
     try{
-        const result = await pool.query("SELECT * FROM feedback NATURAL JOIN users WHERE event_id = $1", [event_id])
+        const result = await pool.query("SELECT * FROM feedback NATURAL JOIN users WHERE event_id = $1 ORDER BY created_at DESC", [event_id]);
         return result.rows;
 
     }
@@ -64,10 +64,14 @@ const getFeedbacks = async (event_id) => {
 
 const addInterested = async (user_id, event_id) => {
     try{
-        const user_id = await getUser(email);
+        const exists = await pool.query("SELECT * FROM interested WHERE user_id = $1 AND event_id = $2", [user_id, event_id]);
+        if(exists.rows.length > 0){
+            return exists.rows[0];
+        }
         const result = await pool.query("INSERT INTO interested (user_id, event_id) VALUES ($1, $2) RETURNING *",
             [user_id, event_id])
         return result.rows[0];
+        
     }
     catch(err){
         console.log(err);
@@ -77,7 +81,7 @@ const addInterested = async (user_id, event_id) => {
 
 const getNonAttendees = async (event_id) => {
     try{
-        const result = await pool.query("SELECT * FROM interested WHERE user_id NOT IN (SELECT user_id FROM attended WHERE event_id = $1)", [event_id])
+        const result = await pool.query("SELECT * FROM interested WHERE user_id NOT IN (SELECT user_id FROM attended WHERE event_id = $1) ORDER by created_at ASC", [event_id])
         return result.rows;
     }
     catch(err){
@@ -86,12 +90,19 @@ const getNonAttendees = async (event_id) => {
     }
 }
 
-const addAttended = async (user_id, event_id) => {
+const addAttended = async (user_id, event_id , feedback) => {
     try{
-        const result = await pool.query("INSERT INTO attended (user_id, event_id) VALUES ($1, $2) RETURNING *",
-            [user_id, event_id])
+        const first_event = await pool.query("SELECT first_event FROM users WHERE user_id = $1", [user_id])
+        if(!first_event.rows[0].first_event){1
+            await pool.query("UPDATE users SET first_event = $1 WHERE user_id = $2", [event_id, user_id])
+        }
+
+        const result = await pool.query("INSERT INTO attended (user_id, event_id , rating,feedback) VALUES ( $1, $2, $3, $4) ON CONFLICT (user_id, event_id) DO UPDATE SET rating = $3, feedback = $4 RETURNING *",
+       [user_id, event_id, feedback.rating , feedback.feedback])
         return result.rows[0];
+
     }
+
     catch(err){
         console.log(err);
         return false;
@@ -100,8 +111,12 @@ const addAttended = async (user_id, event_id) => {
 
 const removeAttended = async (user_id, event_id) => {
     try{
-        const result = await pool.query("DELETE FROM attended WHERE user_id = $1 AND event_id = $2",
+        await pool.query("DELETE FROM attended WHERE user_id = $1 AND event_id = $2",
             [user_id, event_id])
+        const first_event = await pool.query("SELECT first_event FROM users WHERE user_id = $1", [user_id])
+        if(first_event.rows[0].first_event == event_id){
+            await pool.query("UPDATE users SET first_event = NULL WHERE user_id = $1", [user_id])
+        }
         return true;
     }
     catch(err){
@@ -110,4 +125,4 @@ const removeAttended = async (user_id, event_id) => {
     }
 }
 
-con
+module.exports = { getUserId, addUser, getInterested, getAttended, getFeedbacks, addInterested, getNonAttendees, addAttended, removeAttended }
