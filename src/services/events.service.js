@@ -1,5 +1,7 @@
 const {pool} = require('../config/postgres');
 
+const {getAttendees , getAbsentees} = require('./user.services')
+
 const addNewEvent = async (event) => {
 
         let newEvent = null
@@ -50,4 +52,29 @@ const getEvents = async () => {
     return events.rows;
 }
 
-module.exports = { addNewEvent, editEvent, deleteEvent , getEvents }
+const getNumbers = async (event_id) => {
+
+    const interestedNo = (await pool.query("SELECT COUNT(*) FROM interested WHERE event_id = $1", [event_id])).rows[0].count;
+    const attendedNo = (await pool.query("SELECT COUNT(*) FROM attended WHERE event_id = $1", [event_id])).rows[0].count;
+    const notAttendedNo = interestedNo - attendedNo;
+    return {interestedNo, attendedNo, notAttendedNo}
+}
+
+const getParticipants = async (event_id) => {
+
+ try   {
+    const attendees = await getAttendees(event_id);
+    const absentees = await getAbsentees(event_id);
+    return {attendees, absentees}
+
+}
+
+catch(err){
+    console.log("error in getParticipants",err);
+    return false;
+}
+}
+
+    
+
+module.exports = { addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants}

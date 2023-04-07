@@ -38,7 +38,7 @@ const getInterested = async (event_id) => {
     }
 }
 
-const getAttended = async (event_id) => {
+const getAttendees = async (event_id) => {
     try{
         const result = await pool.query("SELECT * FROM attended NATURAL JOIN users WHERE event_id = $1 ORDER BY created_at DESC", [event_id]);
         return result.rows;
@@ -79,7 +79,7 @@ const addInterested = async (user_id, event_id) => {
     }
 }
 
-const getNonAttendees = async (event_id) => {
+const getAbsentees = async (event_id) => {
     try{
         const result = await pool.query("SELECT * FROM interested WHERE user_id NOT IN (SELECT user_id FROM attended WHERE event_id = $1) ORDER by created_at ASC", [event_id])
         return result.rows;
@@ -125,4 +125,4 @@ const removeAttended = async (user_id, event_id) => {
     }
 }
 
-module.exports = { getUserId, addUser, getInterested, getAttended, getFeedbacks, addInterested, getNonAttendees, addAttended, removeAttended }
+module.exports = { getUserId, addUser, getInterested, getAttendees, getFeedbacks, addInterested, getAbsentees, addAttended, removeAttended }
