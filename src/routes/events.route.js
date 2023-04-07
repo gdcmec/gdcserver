@@ -1,5 +1,5 @@
 const express = require("express")
-const {addNewEventController , editEventController , deleteEventController , getEventsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController} = require("../controller/event.controller")
+const {addNewEventController , editEventController , deleteEventController , getEventsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController} = require("../controller/events.controller")
 
 const router = express.Router()
 
