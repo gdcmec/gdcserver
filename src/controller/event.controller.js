@@ -1,5 +1,5 @@
 
-const {addNewEvent, editEvent , deleteEvent , getEvents , getParticipantsData} = require("../services/events.service")
+const {addNewEvent, editEvent , deleteEvent , getEvents , getParticipants} = require("../services/events.service")
 
 const addNewEventController = async (req, res) => {
     const event = req.body.event
@@ -43,7 +43,36 @@ const getNumbersController = async (req, res) => {
     res.status(200).json(participantsData)
 }
 
+const addAttendeeController = async (req, res) => {
+    const event_id = req.params.id
+    const user_id = req.body.user_id
+    const added = await addAttendee(event_id, user_id)
+    if(added)
+        res.status(200).json({success : true})
+    else
+        res.status(500).json({success : false})
+}
+
+const deleteAttendeeController = async (req, res) => {
+    const event_id = req.params.id
+    const user_id = req.body.user_id
+    const deleted = await deleteAttendee(event_id, user_id)
+    if(deleted)
+        res.status(200).json({success : true})
+    else
+        res.status(500).json({success : false})
+}
+
+const getParticipantsController = async (req, res) => {
+    const event_id = req.params.id
+    const participants = await getParticipants(event_id)
+    if(participants)
+        res.status(200).json({success : true , participants : participants})
+    else
+        res.status(500).json({success : false})
+
+}
 
 
 
-module.exports = {addNewEventController , editEventController , deleteEventController , getEventsController , getNumbersController};
+module.exports = {addNewEventController , editEventController , deleteEventController , getEventsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController};

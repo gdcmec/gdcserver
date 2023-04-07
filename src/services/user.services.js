@@ -13,6 +13,18 @@ const getUserId = async (email) => {
     }
 }
 
+const getUsers = async () => {
+    try{
+        const result = await pool.query("SELECT user_id , name , email , pnumber , class , year , title , users.created_at FROM users , events where first_event = event_id ORDER BY users.created_at ASC");
+        console.log(result.rows);
+        return result.rows;
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
 const addUser = async (user) => {
     
         try{
@@ -125,4 +137,41 @@ const removeAttended = async (user_id, event_id) => {
     }
 }
 
-module.exports = { getUserId, addUser, getInterested, getAttendees, getFeedbacks, addInterested, getAbsentees, addAttended, removeAttended }
+const deleteUser = async (user_id) => {
+    try{
+        await pool.query("DELETE FROM users WHERE user_id = $1", [user_id])
+        return true;
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
+const getUserEvents = async (user_id) => {
+    try{
+        const attended = await pool.query("SELECT * FROM interested NATURAL JOIN attended WHERE user_id = $1", [user_id]);
+        const absent = await pool.query("SELECT * FROM interested WHERE user_id = $1 AND event_id NOT IN (SELECT event_id FROM attended WHERE user_id = $1)", [user_id]);
+        return {attended: attended.rows, absent: absent.rows};
+
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+
+}
+
+const editUser = async (user) => {
+    try{
+        const result = await pool.query("UPDATE users SET name = $1, email = $2, pnumber = $3, class = $4, year = $5 WHERE user_id = $6 RETURNING *",
+            [user.name, user.email, user.pnumber, user.class, user.year, user.user_id])
+        return result.rows[0];
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
+module.exports = { getUserId,getUsers,editUser,getUserEvents,addUser,deleteUser, getInterested, getAttendees, getFeedbacks, addInterested, getAbsentees, addAttended, removeAttended }
