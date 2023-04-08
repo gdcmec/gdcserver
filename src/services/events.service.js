@@ -39,7 +39,8 @@ const deleteEvent = async (event_id) => {
         return false;
     }
 }
-const getEvents = async () => {
+  
+const getEvents = async () => { //to be deleted
 
     let events = null
     try{
@@ -52,12 +53,39 @@ const getEvents = async () => {
     return events.rows;
 }
 
+const getEventHeaders = async () => {
+    let eventHeaders = null
+    try{
+    eventHeaders = await pool.query("SELECT event_id, title, date, time, venue FROM events")
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+    return eventHeaders.rows;
+}
+
+const getEventDetails = async (event_id) => {
+    try{
+    const eventDetails = await pool.query("SELECT * FROM events WHERE event_id = $1", [event_id])
+    const numbers = await getNumbers(event_id);
+    const participants = await getParticipants(event_id);
+    return {details : eventDetails.rows[0], numbers, participants}
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
+
+
 const getNumbers = async (event_id) => {
 
-    const interestedNo = (await pool.query("SELECT COUNT(*) FROM interested WHERE event_id = $1", [event_id])).rows[0].count;
-    const attendedNo = (await pool.query("SELECT COUNT(*) FROM attended WHERE event_id = $1", [event_id])).rows[0].count;
-    const notAttendedNo = interestedNo - attendedNo;
-    return {interestedNo, attendedNo, notAttendedNo}
+    const expected = (await pool.query("SELECT COUNT(*) FROM interested WHERE event_id = $1", [event_id])).rows[0].count;
+    const attended = (await pool.query("SELECT COUNT(*) FROM attended WHERE event_id = $1", [event_id])).rows[0].count;
+    const absentees = expected - attended;
+    return {expected, attended, absentees}
 }
 
 const getParticipants = async (event_id) => {
@@ -77,4 +105,4 @@ catch(err){
 
     
 
-module.exports = { addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants , getAttendees , getAbsentees }
+module.exports = { addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants , getAttendees , getAbsentees , getEventHeaders , getEventDetails }
