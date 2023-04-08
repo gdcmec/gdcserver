@@ -12,6 +12,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use("/cms", require("./routes/cms.route"))
+app.use("/sheets", require("./routes/sheets.route"))
 
 app.get("/", (req, res) => {
   res.send("GDC Server")
