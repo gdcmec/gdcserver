@@ -2,13 +2,13 @@ const {getUsersController , addUserController , deleteUserController , getUserEv
 
 const router = require('express').Router();
 
-router.get('/get/:id', getUsersController);
+router.get('/get', getUsersController);
 
 router.post('/new', addUserController)
 
 router.delete('/delete/:id', deleteUserController)
 
-router.get('get-events/:id', getUserEventsController)
+router.get('/get-events/:id', getUserEventsController)
 
 router.post('/edit', editUserController)
 

@@ -28,7 +28,7 @@ const getUsersController = async (req, res) => {
 
 const deleteUserController = async (req, res) => {
     const user_id = req.params.user_id;
-    deleteMember(member_id).then((result) => {
+    const result = await deleteUser(user_id)
     if(result)
     res.status(200).json({
         success: true,
@@ -40,11 +40,11 @@ const deleteUserController = async (req, res) => {
             success: false,
             message: "User not deleted",
         })
-    }});
-}
+    }}
+
 
 const getUserEventsController = async (req, res) => {
-    const user_id = req.params.user_id;
+    const user_id = req.params.id;
     const events = await getUserEvents(user_id);
     if(!events)
         res.status(500).json({

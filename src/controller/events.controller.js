@@ -1,5 +1,6 @@
 
-const {addNewEvent, editEvent , deleteEvent , getEvents , getParticipants} = require("../services/events.service")
+const {addNewEvent, editEvent , deleteEvent , getEvents , getParticipants } = require("../services/events.service")
+const {addAttendee , deleteAttendee} = require("../services/user.services")
 
 const addNewEventController = async (req, res) => {
     const event = req.body.event
@@ -56,7 +57,7 @@ const addAttendeeController = async (req, res) => {
 const deleteAttendeeController = async (req, res) => {
     const event_id = req.params.id
     const user_id = req.body.user_id
-    const deleted = await deleteAttendee(event_id, user_id)
+    const deleted = await deleteAttendee(user_id, event_id)
     if(deleted)
         res.status(200).json({success : true})
     else

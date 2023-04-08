@@ -4,7 +4,7 @@ const addNewMember = async (memberDetails) => {
 
     try{
     const member = await pool.query("INSERT INTO members (name, photo_url, position) VALUES ($1, $2, $3) RETURNING member_id",
-        [memberDetails.name, memberDetails.photoUrl, memberDetails.position])
+        [memberDetails.name, memberDetails.photo_url, memberDetails.position])
     return member.rows[0].member_id;
     }
     catch(err){

@@ -77,4 +77,4 @@ catch(err){
 
     
 
-module.exports = { addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants}
+module.exports = { addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants , getAttendees , getAbsentees }

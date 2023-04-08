@@ -102,7 +102,7 @@ const getAbsentees = async (event_id) => {
     }
 }
 
-const addAttended = async (user_id, event_id , feedback) => {
+const addAttendee = async (user_id, event_id , feedback) => {
     try{
         const first_event = await pool.query("SELECT first_event FROM users WHERE user_id = $1", [user_id])
         if(!first_event.rows[0].first_event){1
@@ -121,11 +121,12 @@ const addAttended = async (user_id, event_id , feedback) => {
     }
 }
 
-const removeAttended = async (user_id, event_id) => {
+const deleteAttendee = async (user_id, event_id) => {
     try{
         await pool.query("DELETE FROM attended WHERE user_id = $1 AND event_id = $2",
             [user_id, event_id])
-        const first_event = await pool.query("SELECT first_event FROM users WHERE user_id = $1", [user_id])
+        const first_event = await pool.query("SELECT first_event FROM users WHERE user_id = $1", [user_id]);
+        console.log(first_event);
         if(first_event.rows[0].first_event == event_id){
             await pool.query("UPDATE users SET first_event = NULL WHERE user_id = $1", [user_id])
         }
@@ -150,8 +151,8 @@ const deleteUser = async (user_id) => {
 
 const getUserEvents = async (user_id) => {
     try{
-        const attended = await pool.query("SELECT * FROM interested NATURAL JOIN attended WHERE user_id = $1", [user_id]);
-        const absent = await pool.query("SELECT * FROM interested WHERE user_id = $1 AND event_id NOT IN (SELECT event_id FROM attended WHERE user_id = $1)", [user_id]);
+        const attended = await pool.query("SELECT * FROM attended , events WHERE attended.event_id = events.event_id AND user_id = $1", [user_id]); // natural join didnt work :(
+        const absent = await pool.query("SELECT * FROM interested ,events WHERE interested.event_id = events.event_id AND user_id = $1 AND interested.event_id NOT IN (SELECT event_id FROM attended WHERE user_id = $1)", [user_id]);
         return {attended: attended.rows, absent: absent.rows};
 
     }
@@ -174,4 +175,4 @@ const editUser = async (user) => {
     }
 }
 
-module.exports = { getUserId,getUsers,editUser,getUserEvents,addUser,deleteUser, getInterested, getAttendees, getFeedbacks, addInterested, getAbsentees, addAttended, removeAttended }
+module.exports = { getUserId,getUsers,editUser,getUserEvents,addUser,deleteUser, getInterested, getAttendees, getFeedbacks, addInterested, getAbsentees, addAttendee , deleteAttendee }
