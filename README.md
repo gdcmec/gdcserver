@@ -6,7 +6,13 @@ To start the server, run npm start. The server will listen on http://localhost:3
 You can also set environment variables by creating a .env file in the root of the project directory. The following variables are used:
 
 PORT: The port on which the server should listen. Defaults to 3000.  
-DATABASE_URL: The URL of the database to use. Defaults to mongodb://localhost:27017/GDC.
+POSTGRES_USER:
+POSTGRES_DATABASE:
+POSTGRES_PASSWORD:
+POSTGRES_PORT:
+POSTGRES_HOST:
+
+Please contact us for the database links.
 
 ## Contributing
 
@@ -23,4 +29,4 @@ Contributions to this project are welcome! To contribute, follow these steps:
 This project uses the following technologies:
 
 Express: A web application framework for Node.js.  
-Mongoose: A MongoDB object modeling tool designed to work in an asynchronous environment.
+Postgres: A relational database management system.
