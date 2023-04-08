@@ -1,5 +1,5 @@
 const express = require("express")
-const {addNewEventController , editEventController , deleteEventController , getEventsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController} = require("../controller/events.controller")
+const {addNewEventController , editEventController , deleteEventController , getEventHeadersController,getEventDetailsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController} = require("../controller/events.controller")
 
 const router = express.Router()
 
@@ -15,9 +15,11 @@ router.delete("/delete/:id", deleteEventController)
 
 router.post("/addAttendee/:id",addAttendeeController)   //user id send in body
 
-router.delete("/deleteAttendee/:id",deleteAttendeeController)   //user id send in body
+router.post("/deleteAttendee/:id",deleteAttendeeController)   //user id send in body
 
-router.get("/get",getEventsController)
+router.get("/get/:id",getEventDetailsController)
+
+router.get("/getHeaders",getEventHeadersController)    //sends the headers of all events
 
 router.get("/getNumbers/:id",getNumbersController)        // sends the number of participants of each categ .
 
