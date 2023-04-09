@@ -52,4 +52,16 @@ const getMembers = async () => {
 
 }
 
-module.exports = { addNewMember, editMember, deleteMember , getMembers }
+const getDetails = async (member_id) => {
+
+    try{
+        const member = await pool.query("SELECT * FROM members WHERE member_id = $1", [member_id])
+        return member.rows[0];
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+
+}
+module.exports = { addNewMember, editMember, deleteMember , getMembers , getDetails }

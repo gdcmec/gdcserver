@@ -1,5 +1,5 @@
 
-const {addNewMember, editMember, deleteMember, getMembers} = require('../services/member.services');
+const {addNewMember, editMember, deleteMember, getMembers , getDetails} = require('../services/member.services');
 
 const addNewMemberController = async (req, res) => {
     const member = req.body.member;
@@ -26,21 +26,37 @@ const editMemberController = async (req, res) => {
         });
 }
 
+const getDetailsController = async (req, res) => {
+    const member_id = req.params.id;
+    const member = await getDetails(member_id);
+    if(!member)
+        res.status(500).json({
+            success: false,
+            message: "Member not found",
+        });
+    else
+    res.status(200).json({
+        success: true,
+        member : member
+    });
+}
+
 const deleteMemberController = async (req, res) => {
-    const member_id = req.body.member_id;
-    deleteMember(member_id).then((result) => {
-    if(result)
+    const member_id = req.params.id;
+    const result = await deleteMember(member_id)
+    if(result){
+    console.log("Member deleted");
     res.status(200).json({
         success: true,
         message: "Member deleted",
-    })
+    })}
     
     else {
         res.status(500).json({
             success: false,
             message: "Member not deleted",
         })
-    }});
+    }
 }
 
 const getMembersController = async (req, res) => {
@@ -58,4 +74,4 @@ const getMembersController = async (req, res) => {
     });
 }
 
-module.exports = {addNewMemberController, editMemberController, deleteMemberController, getMembersController};
+module.exports = {addNewMemberController, editMemberController, deleteMemberController, getMembersController , getDetailsController};
