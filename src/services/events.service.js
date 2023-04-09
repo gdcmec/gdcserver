@@ -56,7 +56,7 @@ const getEvents = async () => { //to be deleted
 const getEventHeaders = async () => {
     let eventHeaders = null
     try{
-    eventHeaders = await pool.query("SELECT event_id, title, date, time, venue FROM events")
+    eventHeaders = await pool.query("SELECT events.event_id, events.title, events.date, events.time, events.venue, COUNT(interested.event_id) as interested_count FROM events LEFT JOIN interested ON interested.event_id = events.event_id GROUP BY events.event_id")
     }
     catch(err){
         console.log(err);

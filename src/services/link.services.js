@@ -1,6 +1,6 @@
 
 const google = require('googleapis').google;
-const {getUserId , addUser ,addInterested , addAttended} = require('./user.services');
+const {getUserId , addUser ,addInterested , addAttendee} = require('./user.services');
 const {pool} = require('../config/postgres');
 
 const auth = new google.auth.GoogleAuth({
@@ -131,9 +131,7 @@ const addAttendedBulk = async(sheetId, event_id) => {
                     name : student.name,
                 });
             }
-         
-
-            const data = await addAttended(user_id, event_id , {rating: student.rating, feedback: student.feedback});
+                     const data = await addAttendee( event_id,user_id , {rating: student.rating, feedback: student.feedback});
             console.log("result",data); 
         }
         return true;
