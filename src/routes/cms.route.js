@@ -9,5 +9,6 @@ router.use("/events", require("./events.route"))
 router.use("/members", require("./members.route"))
 router.use("/users", require("./users.route"))
 router.use("/admins", require("./admins.route"))
+router.use("/static", require("./static.route"))
 
 module.exports = router

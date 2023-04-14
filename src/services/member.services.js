@@ -3,9 +3,16 @@ const {pool} = require('../config/postgres');
 const addNewMember = async (memberDetails) => {
 
     try{
-    const member = await pool.query("INSERT INTO members (name, photo_url, position) VALUES ($1, $2, $3) RETURNING member_id",
-        [memberDetails.name, memberDetails.photo_url, memberDetails.position])
-    return member.rows[0].member_id;
+    const member = await pool.query("INSERT INTO members (name, position) VALUES ($1, $2) RETURNING member_id",
+        [memberDetails.name, memberDetails.position])
+    
+    const id = member.rows[0].member_id;
+
+    const photo_url = `${process.env.SUPABASE_STORAGE_URL}/members/${id}.jpg`
+
+    await pool.query("UPDATE members SET photo_url = $1 WHERE member_id = $2 RETURNING *",
+        [photo_url, id])
+    return id
     }
     catch(err){
         console.log(err);
@@ -16,8 +23,8 @@ const addNewMember = async (memberDetails) => {
 const editMember = async (memberDetails) => {
     
     try{
-     const result = await pool.query("UPDATE members SET name = $1, photo_url = $2, position = $3 WHERE member_id = $4 RETURNING *",
-        [memberDetails.name, memberDetails.photo_url, memberDetails.position, memberDetails.member_id])
+     const result = await pool.query("UPDATE members SET name = $1,  position = $2 WHERE member_id = $3 RETURNING *",
+        [memberDetails.name, memberDetails.position, memberDetails.member_id])
     return result.rows[0];
 }
 catch(err){

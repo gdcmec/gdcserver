@@ -6,8 +6,16 @@ const addNewEvent = async (event) => {
 
         try{
 
-            const newEvent = await pool.query("INSERT INTO events (title, description, date, time, venue, registration_link) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *", [event.title, event.description, event.date, event.time, event.venue, event.registration_link])
-            return newEvent.rows[0];
+            const newEvent = await pool.query("INSERT INTO events (title, description, date, time, venue, registration_link) VALUES ($1, $2, $3, $4, $5, $6) RETURNING event_id", [event.title, event.description, event.date, event.time, event.venue, event.registration_link])
+         
+            const event_id = newEvent.rows[0].event_id;
+            
+            const poster_url = `${process.env.SUPABASE_STORAGE_URL}/events/${event_id}/poster.jpg`
+
+            const result = await pool.query("UPDATE events SET poster_url = $1 WHERE event_id = $2 RETURNING *", [poster_url, event_id])
+            return result.rows[0];
+
+
         }
         catch(err){
             console.log(err);
@@ -56,7 +64,7 @@ const getEvents = async () => { //to be deleted
 const getEventHeaders = async () => {
     let eventHeaders = null
     try{
-    eventHeaders = await pool.query("SELECT events.event_id, events.title, events.date, events.time, events.venue, COUNT(interested.event_id) as interested_count FROM events LEFT JOIN interested ON interested.event_id = events.event_id GROUP BY events.event_id")
+    eventHeaders = await pool.query("SELECT events.event_id, events.title, events.date, events.time, events.venue,events.poster_url, COUNT(interested.event_id) as interested_count FROM events LEFT JOIN interested ON interested.event_id = events.event_id GROUP BY events.event_id")
     }
     catch(err){
         console.log(err);
