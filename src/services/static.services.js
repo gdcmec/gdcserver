@@ -2,13 +2,10 @@ const {pool} = require("../config/postgres");
 
 const editAbout = async (aboutUs) => {
     try {
-        await pool.query("BEGIN;")
-        await pool.query("DELETE FROM aboutus")
         const query =`
-        INSERT INTO aboutus  (what,why,how) VALUES ($1, $2, $3) RETURNING *;
-          `
-        const result = await pool.query(query, [aboutUs.what, aboutUs.why, aboutUs.how])
-        await pool.query("COMMIT;")
+            UPDATE aboutus SET title = $1, description = $2 WHERE id = $3 RETURNING *;
+        `
+        const result = await pool.query(query, [aboutUs.title, aboutUs.description, aboutUs.id])
         return result.rows[0];
     }
     catch (err) {
@@ -19,8 +16,12 @@ const editAbout = async (aboutUs) => {
 
 const getAbout = async () => {  
     try {
-        const result = await pool.query("SELECT * FROM aboutus")
-        return result.rows[0];
+        const result = await pool.query("SELECT * FROM aboutus ORDER BY order ASC")
+        return {
+            what : result.rows[0],
+            why : result.rows[1],
+            how : result.rows[2]
+        }
     }
     catch (err) {
         console.log(err);
