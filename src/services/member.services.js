@@ -67,7 +67,6 @@ const getTeamMembers = async (team_id) => {
        
     try{ 
         const members = await pool.query("SELECT * FROM members WHERE team_id = $1", [team_id])
-        console.log("getT passed");
         return members.rows;
     }
     catch(err){
@@ -82,7 +81,6 @@ const getSectionMembers = async () => {
 
     try{
         const res = await pool.query("SELECT * FROM teams")
-        console.log("getS passed");
         const teams = res.rows;
         let sections = []
         for (let i = 0; i < teams.length; i++) {
@@ -120,7 +118,6 @@ const getDetails = async (member_id) => {
 
 const getTeamId = async (teamName) => {
     try{
-        console.log(teamName , "team name")
         const team = await pool.query("SELECT team_id FROM teams WHERE team_name = $1", [teamName])
         return team.rows[0].team_id;
     }
