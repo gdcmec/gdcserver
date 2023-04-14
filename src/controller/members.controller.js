@@ -1,5 +1,5 @@
 
-const {addNewMember, editMember, deleteMember, getMembers , getDetails} = require('../services/member.services');
+const {addNewMember, editMember, deleteMember, getMembers , getDetails , getSectionMembers} = require('../services/member.services');
 
 const addNewMemberController = async (req, res) => {
     const member = req.body.member;
@@ -74,4 +74,22 @@ const getMembersController = async (req, res) => {
     });
 }
 
-module.exports = {addNewMemberController, editMemberController, deleteMemberController, getMembersController , getDetailsController};
+const getSectionMembersController = async (req, res) => {
+    
+    console.log("got request");
+    const sections = await getSectionMembers();
+    if(!sections)
+        res.status(500).json({
+            success: false,
+            message: "Members not found",
+        });
+    else
+    res.status(200).json({
+        success: true,
+        sections : sections
+    });
+}
+
+
+
+module.exports = {addNewMemberController, editMemberController, deleteMemberController, getMembersController , getDetailsController , getSectionMembersController};
