@@ -16,7 +16,7 @@ const editAbout = async (aboutUs) => {
 
 const getAbout = async () => {  
     try {
-        const result = await pool.query("SELECT * FROM aboutus ORDER BY order ASC")
+        const result = await pool.query("SELECT * FROM aboutus ORDER BY priority ASC")
         return {
             what : result.rows[0],
             why : result.rows[1],
