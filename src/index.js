@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 const corsOptions ={
-    origin:['http://localhost:3001' , 'http://127.0.0.1:5173'], 
+    origin:['http://localhost:3001' , 'http://127.0.0.1:5173' , "https://gdcdashboard.onrender.com/" , "https://gdcmec.netlify.app"], 
     credentials:true,            //access-control-allow-credentials:true
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     optionSuccessStatus:200
