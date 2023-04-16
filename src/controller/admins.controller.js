@@ -4,7 +4,7 @@ const { daysToMilliSeconds } = require('../utils/auth_utils')
 const { verify } = require('jsonwebtoken')
 
 const adminLoginController = async (req, res) => {
-    const { username, password } = req.body.credentials
+    const { username, password } = req.body
     if (!await exists(username)) {
         res.status(500).send({ success: false, message: 'Username does not exist!' })
         return
@@ -17,12 +17,14 @@ const adminLoginController = async (req, res) => {
     res.cookie("access-token", access_token, {
         maxAge: daysToMilliSeconds(3),
         httpOnly: true,
+        // secure : false,
+
     })
     res.status(200).send({ success: true, message: 'Logged In' })
 }
 
 const adminRegisterController = async (req, res) => {
-    const { username, password } = req.body.credentials
+    const { username, password } = req.body
     if (await exists(username)) {
         res.status(500).send({ success: false, message: 'Username already exists' })
         return;
@@ -50,6 +52,7 @@ const getAdminController = async (req, res) => {
 }
 
 const adminLogoutController = async (req, res) => {
+    console.log(req.authenticated , "got logout request")
     if (!req.authenticated) {
         res.status(500).send({ success: false, message: 'Not authenticated!' })
         return
@@ -74,7 +77,7 @@ const adminRemoveController = async (req, res) => {
 }
 
 const adminAuthenticationStatusController = async (req, res) => {
-    res.status(200).send(req.authenticated)
+    res.status(200).json({authenticated :req.authenticated})
 }
 
 module.exports = { adminLoginController, getAdminController, adminRegisterController, adminLogoutController, adminRemoveController, adminAuthenticationStatusController };

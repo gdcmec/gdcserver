@@ -7,11 +7,11 @@ router.get('/is-authenticated', validateAdminToken, adminAuthenticationStatusCon
 
 router.get('/get-admin', validateAdminToken, getAdminController)
 
-router.post('/register', adminRegisterController)
+router.post('/register',validateAdminToken, adminRegisterController)
 
 router.post('/login', adminLoginController)
 
-router.post('/logout', validateAdminToken, adminLogoutController)
+router.delete('/logout', validateAdminToken, adminLogoutController)
 
 router.delete('/remove', validateAdminToken, adminRemoveController)
 
