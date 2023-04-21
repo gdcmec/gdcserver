@@ -23,6 +23,7 @@ const corsOptions = {
     'https://gdcmec.onrender.com',
   ],
   credentials: true, //access-control-allow-credentials:true
+  secure: true, //access-control-allow-secure:true
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   optionSuccessStatus: 200,
 };

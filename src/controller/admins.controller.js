@@ -17,6 +17,7 @@ const adminLoginController = async (req, res) => {
   res.cookie('access_token', access_token, {
     maxAge: daysToMilliSeconds(3),
     httpOnly: true,
+    secure: true,
   });
   res.status(200).send({ success: true, message: 'Logged In' });
 };
