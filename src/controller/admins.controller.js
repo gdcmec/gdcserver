@@ -14,13 +14,7 @@ const adminLoginController = async (req, res) => {
         return
     }
     const access_token = createAdminToken(await getAdmin(username))
-    res.cookie("access-token", access_token, {
-        maxAge: daysToMilliSeconds(3),
-        httpOnly: true,
-        // secure : false,
-
-    })
-    res.status(200).send({ success: true, message: 'Logged In' })
+    res.status(200).send({ success: true,token: access_token , message: 'Logged In' })
 }
 
 const adminRegisterController = async (req, res) => {

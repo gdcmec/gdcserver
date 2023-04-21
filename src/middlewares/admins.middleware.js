@@ -1,12 +1,9 @@
 const { verify, decode } = require('jsonwebtoken')
 
 const validateAdminToken =  (req, res, next) => {
-    console.log("got validate token request" , req.cookies["access-token"])
-    if (!req.cookies) {
-        req.authenticated = false
-        return next()
-    }
-    const access_token = req.cookies["access-token"]
+    //get token from header
+    const {access_token} = req.headers; 
+    console.log("got validate token request" , access_token)
     if (!access_token) {
         console.log("invalid token" )
 
