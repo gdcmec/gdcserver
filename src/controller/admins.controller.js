@@ -18,6 +18,7 @@ const adminLoginController = async (req, res) => {
     maxAge: daysToMilliSeconds(3),
     httpOnly: true,
     secure: true,
+    sameSite : 'none',
   });
   res.status(200).send({ success: true, message: 'Logged In' });
 };
