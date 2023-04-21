@@ -24,6 +24,7 @@ const corsOptions = {
   ],
   credentials: true, //access-control-allow-credentials:true
   secure: true, //access-control-allow-secure:true
+  sameSite : 'none',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   optionSuccessStatus: 200,
 };
