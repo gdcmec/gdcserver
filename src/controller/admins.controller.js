@@ -54,6 +54,9 @@ const adminLogoutController = async (req, res) => {
   }
   res.clearCookie('access_token', {
       path : '/',
+      httpOnly: true,
+      secure: true,
+      sameSite : 'none',
   });
   console.log(req.cookies['access_token'], 'logged out'); 
   res.status(200).send({ success: true, message: 'Logged out' });
