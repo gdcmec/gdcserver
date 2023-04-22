@@ -1,5 +1,5 @@
 
-const {addNewEvent, editEvent , deleteEvent , getEventHeaders , getEventDetails , getParticipants, getNumbers } = require("../services/events.service")
+const {addNewEvent, editEvent , deleteImage,deleteEvent , getEventHeaders , getEventDetails , getParticipants, getNumbers, getGallery , uploadGallery } = require("../services/events.service")
 const {addAttendee , deleteAttendee} = require("../services/user.services")
 
 const addNewEventController = async (req, res) => {
@@ -45,6 +45,7 @@ const getEventDetailsController = async (req, res) => {
     const id = req.params.id
     console.log(id);
     const event = await getEventDetails(id)
+
     if (!event)
         res.status(500).json({success : false , message : "Event not found"})
     res.status(200).json({success : true , event :event})
@@ -92,6 +93,38 @@ const getParticipantsController = async (req, res) => {
 
 }
 
+const uploadGalleryController = async (req, res) => {
+    const event_id = req.params.id
+    const images = req.body.images
+    const uploaded = await uploadGallery(event_id, images)
+    console.log("uploaded details " ,uploaded);
+    if(uploaded)
+        res.status(200).json({success : true , urls : uploaded})
+    else
+        res.status(500).json({success : false})
+}
+
+const deleteImageController = async (req, res) => {
+    const event_id = req.params.id
+
+    const deleted = await deleteImage(event_id)
+    if(deleted)
+        res.status(200).json({success : true})
+    else
+        res.status(500).json({success : false})
+}
+
+const getGalleryController = async (req, res) => {
+    const event_id = req.params.id
+    const gallery = await getGallery(event_id)
+    if(gallery)
+        res.status(200).json({success : true , gallery : gallery})
+    else
+        res.status(500).json({success : false})
+}
 
 
-module.exports = {addNewEventController , editEventController , deleteEventController  , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController , getEventHeadersController , getEventDetailsController};
+
+
+
+module.exports = {addNewEventController ,getGalleryController,deleteImageController, editEventController , deleteEventController  , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController , getEventHeadersController , getEventDetailsController , uploadGalleryController};

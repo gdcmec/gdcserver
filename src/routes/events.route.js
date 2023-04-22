@@ -1,5 +1,5 @@
 const express = require("express")
-const {addNewEventController , editEventController , deleteEventController , getEventHeadersController,getEventDetailsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController} = require("../controller/events.controller")
+const {addNewEventController ,getGalleryController ,deleteImageController, uploadGalleryController, editEventController , deleteEventController , getEventHeadersController,getEventDetailsController , getNumbersController , addAttendeeController , deleteAttendeeController , getParticipantsController} = require("../controller/events.controller")
 const { validateAdminToken } = require("../middlewares/admins.middleware")
 
 const router = express.Router()
@@ -26,6 +26,11 @@ router.get("/getNumbers/:id",validateAdminToken,getNumbersController)        // 
 
 router.get("/getParticipants/:id",validateAdminToken,getParticipantsController)       //sends the list of participants as attended and non-attended sections
 
+router.post("/upload-gallery/:id",validateAdminToken,uploadGalleryController)   //sends the list of images in body
 
+
+router.get("/get-gallery/:id",getGalleryController)   //sends the list of images in body
+
+router.delete("/delete-image/:id",validateAdminToken,deleteImageController)   //sends the list of images in body
 
 module.exports = router

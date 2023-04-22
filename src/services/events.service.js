@@ -1,4 +1,5 @@
 const {pool} = require('../config/postgres');
+const supabase = require('../config/supabase.config');
 
 const {getAttendees , getAbsentees} = require('./user.services')
 
@@ -65,7 +66,8 @@ const getEventHeaders = async () => {
     let eventHeaders = null
     try{
     eventHeaders = await pool.query("SELECT events.event_id, events.title, events.date, events.time, events.venue,events.poster_url, events.description ,COUNT(interested.event_id) as interested_count FROM events LEFT JOIN interested ON interested.event_id = events.event_id GROUP BY events.event_id")
-    }
+    
+}
     catch(err){
         console.log(err);
         return false;
@@ -76,9 +78,10 @@ const getEventHeaders = async () => {
 const getEventDetails = async (event_id) => {
     try{
     const eventDetails = await pool.query("SELECT * FROM events WHERE event_id = $1", [event_id])
+    const galleryUrls = await pool.query("SELECT * FROM event_gallery WHERE event_id = $1", [event_id])
     const numbers = await getNumbers(event_id);
     const participants = await getParticipants(event_id);
-    return {details : eventDetails.rows[0], numbers, participants}
+    return {details : eventDetails.rows[0], numbers, participants , galleryUrls : galleryUrls.rows}
     }
     catch(err){
         console.log(err);
@@ -111,6 +114,45 @@ catch(err){
 }
 }
 
-    
+const uploadGallery = async (event_id, imageNames) => {
 
-module.exports = { addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants , getAttendees , getAbsentees , getEventHeaders , getEventDetails }
+    try{
+    const gallery = imageNames.map(imageName => `${process.env.SUPABASE_STORAGE_URL}/events/${event_id}/gallery/${imageName}`)
+    for(let i = 0; i < gallery.length; i++){
+        await pool.query("INSERT INTO event_gallery (event_id, image_url , image_name) VALUES ($1, $2 , $3)", [event_id, gallery[i] , imageNames[i]])
+    }
+    const galleryUrls = await getGallery(event_id);
+    return galleryUrls;
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
+const getGallery = async (event_id) => {
+     
+    try{
+    const gallery = await pool.query("SELECT image_url , id FROM event_gallery WHERE event_id = $1", [event_id])
+    return gallery.rows;
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
+const deleteImage = async (id , name) => {
+try{
+    const res = await pool.query("DELETE FROM event_gallery WHERE id = $1 RETURNING event_id , image_name", [id])
+    await supabase.storage.from('events').remove([`${res.rows[0].event_id}/gallery/${res.rows[0].image_name}`])
+    return true;
+} 
+catch(err){
+    console.log(err);
+    return false;
+}
+}
+
+
+module.exports = { deleteImage ,addNewEvent, editEvent, deleteEvent , getEvents , getNumbers ,getParticipants , getAttendees , getAbsentees , getEventHeaders , getEventDetails , uploadGallery , getGallery }

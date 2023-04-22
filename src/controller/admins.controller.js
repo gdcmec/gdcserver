@@ -48,7 +48,7 @@ const getAdminController = async (req, res) => {
     res.status(500).send({ success: false, message: 'Not authenticated!' });
     return;
   }
-  const decoded_token = verify(req.cookies['access-token'], process.env.SECRET_KEY);
+  const decoded_token = verify(req.cookies['access_token'], process.env.SECRET_KEY);
   res.status(200).send({ success: true, message: { id: decoded_token.id, username: decoded_token.username } });
 };
 
@@ -59,6 +59,7 @@ const adminLogoutController = async (req, res) => {
     return;
   }
   res.clearCookie('access_token');
+  console.log(req.cookies['access_token'], 'logged out'); 
   res.status(200).send({ success: true, message: 'Logged out' });
 };
 
