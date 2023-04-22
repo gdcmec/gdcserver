@@ -31,14 +31,8 @@ const adminRegisterController = async (req, res) => {
   }
   const hashed_password = await bcrypt.hash(password, 10);
   if (await addAdmin(username, hashed_password)) {
-    const access_token = createAdminToken(await getAdmin(username));
-    res.cookie('access-token', access_token, {
-      maxAge: daysToMilliSeconds(3),
-      httpOnly: true,
-      secure: true,
-    });
-    res.status(200).send({ success: true, message: 'Admin successfully registered' });
-    return;
+    return res.status(200).send({ success: true, message: 'Admin successfully registered' });
+    
   }
   res.status(500).send({ success: false, message: 'Admin registration failed!' });
 };
@@ -58,7 +52,9 @@ const adminLogoutController = async (req, res) => {
     res.status(500).send({ success: false, message: 'Not authenticated!' });
     return;
   }
-  res.clearCookie('access_token');
+  res.clearCookie('access_token', {
+      path : '/',
+  });
   console.log(req.cookies['access_token'], 'logged out'); 
   res.status(200).send({ success: true, message: 'Logged out' });
 };
