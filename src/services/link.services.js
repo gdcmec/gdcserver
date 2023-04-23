@@ -3,8 +3,9 @@ const google = require('googleapis').google;
 const {getUserId , addUser ,addInterested , addAttendee} = require('./user.services');
 const {pool} = require('../config/postgres');
 
+const key = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 const auth = new google.auth.GoogleAuth({
-    keyFile: "credentials.json",
+    credentials: key,
     scopes: "https://www.googleapis.com/auth/spreadsheets"
 });
 
