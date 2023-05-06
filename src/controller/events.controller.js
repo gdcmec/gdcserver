@@ -29,6 +29,7 @@ const editEventController = async (req, res) => {
 const deleteEventController = async (req, res) => {
     const id = req.params.id
     console.log(id);
+    
     await deleteEvent(id)
     res.send("Event deleted")
 }

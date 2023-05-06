@@ -40,7 +40,9 @@ const editEvent = async (event) => {
 const deleteEvent = async (event_id) => {
 
     try{
-    await pool.query("DELETE FROM events WHERE event_id = $1", [event_id])
+    let res = await deleteEventParticipants(event_id);
+    res = await deleteEventGallery(event_id);
+    res = await pool.query("DELETE FROM events WHERE event_id = $1", [event_id])
     return true;
     }
     catch(err){
@@ -152,6 +154,25 @@ catch(err){
     console.log(err);
     return false;
 }
+}
+
+const deleteEventParticipants = async (event_id) => {
+         console.log("\n\n\n\n\ deleting participants \n\n\n\n\n");
+        await pool.query("UPDATE users SET first_event = NULL WHERE first_event = $1", [event_id])
+        await pool.query("DELETE FROM interested WHERE event_id = $1", [event_id])
+        await pool.query("DELETE FROM attended WHERE event_id = $1", [event_id])
+        await pool.query("DELETE FROM sheets WHERE event_id = $1", [event_id])
+        console.log("deleted participants");
+        return true;
+    
+}
+
+const deleteEventGallery = async (event_id) => {
+
+        console.log("\n\n\n\n\ deleting gallery \n\n\n\n\n");
+        const res = await pool.query("DELETE FROM event_gallery WHERE event_id = $1", [event_id])
+        console.log("deleted gallery");
+        return true;
 }
 
 
